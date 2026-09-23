@@ -1,0 +1,12 @@
+{
+  "_comment": "Closed enums shared by both clients and the server. A token belongs here only if both platforms use it.",
+  "enums": {
+    "_comment": "Values that cross the wire, so both clients and the server must agree on them. Client-local preferences do not belong here.",
+    "sharePermission": {
+      "values": [
+        "view",
+        "save"
+      ]
+    }
+  }
+}

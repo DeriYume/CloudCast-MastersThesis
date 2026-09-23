@@ -1,0 +1,8 @@
+<resources>
+    <!-- windowBackground is painted by the framework before the first Compose frame, so it
+         is pinned to the generated page colour to avoid a white flash. -->
+    <style name="Theme.CloudCast" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+</resources>

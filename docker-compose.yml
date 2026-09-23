@@ -1,0 +1,171 @@
+services:
+  postgres:
+    restart: unless-stopped
+    image: postgres:16
+    environment:
+      # admin role - migrations only
+      POSTGRES_USER: ${POSTGRES_USER:?missing in .env (copy .env.example)}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?missing in .env (set a strong DB password)}
+      POSTGRES_DB: ${POSTGRES_DB:?missing in .env (copy .env.example)}
+      # least-privilege role the services connect as (created by 01-roles.sql)
+      APP_DB_USER: ${APP_DB_USER:?missing in .env (copy .env.example)}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?missing in .env (openssl rand -hex 32)}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/01-roles.sql:/docker-entrypoint-initdb.d/01-roles.sql:ro
+      - ./db/02-schema.sql:/docker-entrypoint-initdb.d/02-schema.sql:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?missing in .env (copy .env.example)}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  auth-service:
+    restart: unless-stopped
+    build: ./auth-service
+    environment:
+      DATABASE_URL: postgres://${APP_DB_USER:?missing in .env (copy .env.example)}:${APP_DB_PASSWORD}@postgres:5432/${POSTGRES_DB:?missing in .env (copy .env.example)}
+      JWT_SECRET: ${JWT_SECRET:?missing in .env (openssl rand -hex 32)}
+      INTERNAL_KEY: ${INTERNAL_KEY:?missing in .env (openssl rand -hex 32)}
+      BLIND_INDEX_PEPPER: ${BLIND_INDEX_PEPPER:?missing in .env (openssl rand -hex 32)}
+      EMAIL_ENC_KEY: ${EMAIL_ENC_KEY:?missing in .env (openssl rand -hex 32)}
+      ACCOUNT_PURGE_GRACE_DAYS: ${ACCOUNT_PURGE_GRACE_DAYS:?missing in .env (copy .env.example)}
+      PORT: 4001
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  file-service:
+    restart: unless-stopped
+    build: ./file-service
+    environment:
+      DATABASE_URL: postgres://${APP_DB_USER:?missing in .env (copy .env.example)}:${APP_DB_PASSWORD}@postgres:5432/${POSTGRES_DB:?missing in .env (copy .env.example)}
+      JWT_SECRET: ${JWT_SECRET:?missing in .env (openssl rand -hex 32)}
+      INTERNAL_KEY: ${INTERNAL_KEY:?missing in .env (openssl rand -hex 32)}
+      SERVER_X25519_SK: ${SERVER_X25519_SK:?missing in .env (base64 of 32 random bytes; opens AI grants)}
+      BLIND_INDEX_PEPPER: ${BLIND_INDEX_PEPPER:?missing in .env (openssl rand -hex 32)}
+      # AI is opt-in: set AI_ENABLED=true and COMPOSE_PROFILES=ai in .env
+      OLLAMA_URL: ${OLLAMA_URL:?missing in .env (copy .env.example)}
+      EXTRACTOR_URL: http://extractor:7000
+      AI_TEXT_MODEL: ${AI_TEXT_MODEL:?missing in .env (copy .env.example)}
+      AI_VISION_MODEL: ${AI_VISION_MODEL:?missing in .env (copy .env.example)}
+      AI_ENABLED: ${AI_ENABLED:?missing in .env (copy .env.example)}
+      AI_EMBED_MODEL: ${AI_EMBED_MODEL:?missing in .env (copy .env.example)}
+      AI_SEMANTIC_ENABLED: ${AI_SEMANTIC_ENABLED:?missing in .env (copy .env.example)}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:?missing in .env (copy .env.example)}
+      AI_MAX_IMAGE_MB: ${AI_MAX_IMAGE_MB:?missing in .env (copy .env.example)}
+      AI_MAX_TEXT_CHARS: ${AI_MAX_TEXT_CHARS:?missing in .env (copy .env.example)}
+      AI_MAX_PER_USER: ${AI_MAX_PER_USER:?missing in .env (copy .env.example)}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:?missing in .env (copy .env.example)}
+      EXTRACT_TIMEOUT_MS: ${EXTRACT_TIMEOUT_MS:?missing in .env (copy .env.example)}
+      SWEEP_INTERVAL_MS: ${SWEEP_INTERVAL_MS:?missing in .env (copy .env.example)}
+      NOTIF_RETENTION_DAYS: ${NOTIF_RETENTION_DAYS:?missing in .env (copy .env.example)}
+      AI_GRANT_RETENTION_HOURS: ${AI_GRANT_RETENTION_HOURS:?missing in .env (copy .env.example)}
+      STORAGE_DIR: /data/files
+      PORT: 4002
+    volumes:
+      - filestore:/data/files
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  gateway:
+    restart: unless-stopped
+    build: ./gateway
+    environment:
+      AUTH_URL: http://auth-service:4001
+      FILE_URL: http://file-service:4002
+      JWT_SECRET: ${JWT_SECRET:?missing in .env (openssl rand -hex 32)}
+      INTERNAL_KEY: ${INTERNAL_KEY:?missing in .env (openssl rand -hex 32)}
+      RATE_LIMIT_PER_MIN: ${RATE_LIMIT_PER_MIN:?missing in .env (copy .env.example)}
+      PORT: 8443
+    ports:
+      - "8443:8443"
+    volumes:
+      # mkcert certificates - generated once locally
+      - ./certs:/certs:ro
+    depends_on:
+      - auth-service
+      - file-service
+
+  # Local AI inference. Starts only under the "ai" profile; never published.
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      OLLAMA_NUM_PARALLEL: ${OLLAMA_NUM_PARALLEL:?missing in .env (copy .env.example)}
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:?missing in .env (copy .env.example)}
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    depends_on:
+      - ollama
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        until ollama list >/dev/null 2>&1; do echo "waiting for ollama..."; sleep 2; done
+        ollama pull ${AI_TEXT_MODEL:?missing in .env (copy .env.example)}
+        ollama pull ${AI_VISION_MODEL:?missing in .env (copy .env.example)}
+        ollama pull ${AI_EMBED_MODEL:?missing in .env (copy .env.example)}
+        echo "models ready"
+    restart: "no"
+
+  extractor:
+    build: ./extractor
+    profiles: ["ai"]
+    environment:
+      PORT: 7000
+      EXTRACT_MAX_MB: ${MAX_UPLOAD_MB:?missing in .env (copy .env.example)}
+      EXTRACT_MAX_CHARS: ${EXTRACT_MAX_CHARS:?missing in .env (copy .env.example)}
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 512m
+    pids_limit: 128
+    restart: unless-stopped
+
+  # DB admin UI - developer convenience, under the "tools" profile.
+  pgadmin:
+      image: dpage/pgadmin4
+      profiles: ["tools"]
+      environment:
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:?missing in .env (copy .env.example)}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:?missing in .env (copy .env.example)}
+        PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 40
+        GUNICORN_ACCESS_LOGFILE: /dev/null
+        PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
+        PGADMIN_CONFIG_SESSION_EXPIRATION_TIME: 168
+      volumes:
+        # pre-registers the CloudCast server in pgAdmin's server list
+        - ./db/servers.json:/pgadmin4/servers.json:ro
+        - pgadmin_data:/var/lib/pgadmin
+      ports:
+        - "127.0.0.1:5050:80"
+      depends_on:
+        postgres:
+          condition: service_healthy
+
+volumes:
+  pgdata:
+  filestore:
+  ollama_models:
+  pgadmin_data:

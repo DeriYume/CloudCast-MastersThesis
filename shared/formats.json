@@ -1,0 +1,461 @@
+{
+  "_comment": "Cross-client data formats. Nothing here has a server-side counterpart - these are agreements between the two clients about bytes and classification the server cannot read or validate, so a drift produces no error, just different behaviour on each platform.",
+  "fileKinds": {
+    "_comment": "Extension -> file kind. Shared so both clients classify a file identically.",
+    "image": [
+      "avif",
+      "bmp",
+      "gif",
+      "heic",
+      "heif",
+      "ico",
+      "jpeg",
+      "jpg",
+      "png",
+      "svg",
+      "tif",
+      "tiff",
+      "webp"
+    ],
+    "video": [
+      "3gp",
+      "avi",
+      "flv",
+      "m4v",
+      "mkv",
+      "mov",
+      "mp4",
+      "mpeg",
+      "mpg",
+      "webm",
+      "wmv"
+    ],
+    "audio": [
+      "aac",
+      "flac",
+      "m4a",
+      "mp3",
+      "ogg",
+      "opus",
+      "wav",
+      "wma"
+    ],
+    "archive": [
+      "7z",
+      "bz2",
+      "gz",
+      "rar",
+      "tar",
+      "tgz",
+      "xz",
+      "zip"
+    ],
+    "doc": [
+      "accdb",
+      "accde",
+      "doc",
+      "docm",
+      "docx",
+      "dot",
+      "dotm",
+      "dotx",
+      "gdoc",
+      "gsheet",
+      "gslides",
+      "hwp",
+      "key",
+      "mdb",
+      "numbers",
+      "odf",
+      "odg",
+      "odp",
+      "ods",
+      "odt",
+      "otp",
+      "ots",
+      "ott",
+      "oxps",
+      "pages",
+      "pot",
+      "potx",
+      "pps",
+      "ppsx",
+      "ppt",
+      "pptm",
+      "pptx",
+      "pub",
+      "rtf",
+      "wpd",
+      "wps",
+      "xls",
+      "xlsb",
+      "xlsm",
+      "xlsx",
+      "xlt",
+      "xltm",
+      "xltx",
+      "xps"
+    ],
+    "code": [
+      "bash",
+      "c",
+      "cpp",
+      "cs",
+      "css",
+      "go",
+      "h",
+      "hpp",
+      "htm",
+      "html",
+      "java",
+      "js",
+      "json",
+      "jsx",
+      "kt",
+      "kts",
+      "php",
+      "py",
+      "rb",
+      "rs",
+      "scss",
+      "sh",
+      "sql",
+      "swift",
+      "toml",
+      "ts",
+      "tsx",
+      "xml",
+      "yaml",
+      "yml"
+    ],
+    "text": [
+      "cfg",
+      "conf",
+      "csv",
+      "env",
+      "ini",
+      "log",
+      "markdown",
+      "md",
+      "tsv",
+      "txt"
+    ]
+  },
+  "metaEnvelope": {
+    "_comment": "Keys inside the sealed {name, mime} envelope in files.meta_enc / meta_sealed.",
+    "nameKey": "n",
+    "mimeKey": "m",
+    "defaultMime": "application/octet-stream"
+  },
+  "signInCode": {
+    "_comment": "Cross-device sign-in code. Crockford Base32 minus I/L/O/U; lookalikes are NOT substituted.",
+    "alphabet": "0123456789ABCDEFGHJKMNPQRSTVWXYZ",
+    "length": 8,
+    "group": 4
+  },
+  "userBlobs": {
+    "_comment": "kind values for the sealed per-user blob store (user_blobs).",
+    "favorites": "favorites"
+  },
+  "searchWords": {
+    "_comment": "Search query word -> file kinds it filters to. Shared so typing 'wallpaper' or 'notes' narrows the same way on both clients.",
+    "archive": [
+      "archive"
+    ],
+    "archives": [
+      "archive"
+    ],
+    "audio": [
+      "audio"
+    ],
+    "backup": [
+      "archive"
+    ],
+    "backups": [
+      "archive"
+    ],
+    "clip": [
+      "video"
+    ],
+    "clips": [
+      "video"
+    ],
+    "code": [
+      "code"
+    ],
+    "doc": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "docs": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "document": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "documents": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "film": [
+      "video"
+    ],
+    "films": [
+      "video"
+    ],
+    "footage": [
+      "video"
+    ],
+    "icon": [
+      "image"
+    ],
+    "image": [
+      "image"
+    ],
+    "images": [
+      "image"
+    ],
+    "movie": [
+      "video"
+    ],
+    "movies": [
+      "video"
+    ],
+    "music": [
+      "audio"
+    ],
+    "note": [
+      "doc",
+      "text"
+    ],
+    "notes": [
+      "text"
+    ],
+    "paper": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "papers": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "pdf": [
+      "pdf"
+    ],
+    "pdfs": [
+      "pdf"
+    ],
+    "photo": [
+      "image"
+    ],
+    "photos": [
+      "image"
+    ],
+    "pic": [
+      "image"
+    ],
+    "pics": [
+      "image"
+    ],
+    "picture": [
+      "image"
+    ],
+    "pictures": [
+      "image"
+    ],
+    "podcast": [
+      "audio"
+    ],
+    "presentation": [
+      "doc"
+    ],
+    "program": [
+      "code"
+    ],
+    "recording": [
+      "audio",
+      "video"
+    ],
+    "recordings": [
+      "audio",
+      "video"
+    ],
+    "report": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "reports": [
+      "doc",
+      "pdf",
+      "text"
+    ],
+    "screenshot": [
+      "image"
+    ],
+    "screenshots": [
+      "image"
+    ],
+    "script": [
+      "code"
+    ],
+    "scripts": [
+      "code"
+    ],
+    "sheet": [
+      "doc"
+    ],
+    "slides": [
+      "doc"
+    ],
+    "song": [
+      "audio"
+    ],
+    "songs": [
+      "audio"
+    ],
+    "sound": [
+      "audio"
+    ],
+    "sounds": [
+      "audio"
+    ],
+    "source": [
+      "code"
+    ],
+    "spreadsheet": [
+      "doc"
+    ],
+    "text": [
+      "text"
+    ],
+    "track": [
+      "audio"
+    ],
+    "tracks": [
+      "audio"
+    ],
+    "video": [
+      "video"
+    ],
+    "videos": [
+      "video"
+    ],
+    "voice": [
+      "audio"
+    ],
+    "wallpaper": [
+      "image"
+    ],
+    "zip": [
+      "archive"
+    ],
+    "zips": [
+      "archive"
+    ]
+  },
+  "kindFolders": {
+    "_comment": "File kind -> auto-file folder name. Shared so the same upload lands in the same folder on both clients. A kind with no folder is not auto-filed.",
+    "image": "Images",
+    "video": "Videos",
+    "audio": "Audio",
+    "pdf": "Documents",
+    "doc": "Documents",
+    "text": "Documents",
+    "code": "Code",
+    "archive": "Archives"
+  },
+  "folderConcepts": {
+    "_comment": "Folder-name synonym groups for smart auto-filing. Two names that share a group describe the same concept, so an AI suggestion of 'Screenshots' can match an existing 'Pictures' folder. Shared so both clients match the same way.",
+    "groups": [
+      [
+        "image",
+        "picture",
+        "photo",
+        "pic",
+        "snapshot",
+        "wallpaper",
+        "screenshot",
+        "screengrab",
+        "screencap"
+      ],
+      [
+        "screenshot",
+        "screengrab",
+        "screencap",
+        "screencapture"
+      ],
+      [
+        "video",
+        "movie",
+        "film",
+        "clip",
+        "footage",
+        "recording"
+      ],
+      [
+        "audio",
+        "music",
+        "song",
+        "sound",
+        "soundtrack",
+        "track",
+        "podcast",
+        "voice"
+      ],
+      [
+        "document",
+        "doc",
+        "pdf",
+        "paper",
+        "letter",
+        "report",
+        "file"
+      ],
+      [
+        "receipt",
+        "invoice",
+        "bill"
+      ],
+      [
+        "code",
+        "source",
+        "script",
+        "program",
+        "snippet",
+        "dev"
+      ],
+      [
+        "archive",
+        "zip",
+        "backup",
+        "compressed"
+      ],
+      [
+        "note",
+        "memo"
+      ],
+      [
+        "data",
+        "dataset",
+        "csv",
+        "spreadsheet",
+        "sheet"
+      ],
+      [
+        "diagram",
+        "chart",
+        "graph",
+        "figure"
+      ]
+    ]
+  }
+}

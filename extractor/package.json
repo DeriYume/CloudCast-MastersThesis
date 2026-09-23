@@ -1,0 +1,15 @@
+{
+  "name": "cloudcast-extractor",
+  "version": "1.0.0",
+  "description": "Isolated document-text extraction chamber. Receives raw bytes, returns text. No DB, no keys, no egress.",
+  "private": true,
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "officeparser": "^7.5.0"
+  }
+}

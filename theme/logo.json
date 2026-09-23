@@ -1,0 +1,39 @@
+{
+  "_comment": "Cloud mark shared by both clients.",
+  "unit": 64,
+  "puffs": [
+    {
+      "cx": 18.0,
+      "cy": 34.5,
+      "r": 9.5
+    },
+    {
+      "cx": 31.5,
+      "cy": 27.5,
+      "r": 11.5
+    },
+    {
+      "cx": 45.0,
+      "cy": 33.0,
+      "r": 10.0
+    }
+  ],
+  "base": {
+    "x": 6.0,
+    "y": 35.0,
+    "w": 52.0,
+    "h": 13.0,
+    "r": 6.5
+  },
+  "launcher": {
+    "viewport": 108,
+    "safe": 74,
+    "background": "#EFEAFB"
+  },
+  "wordmark": {
+    "first": "Cloud",
+    "second": "Cast",
+    "weight": 700,
+    "tracking": -0.02
+  }
+}

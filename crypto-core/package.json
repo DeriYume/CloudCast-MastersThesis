@@ -1,0 +1,17 @@
+{
+  "name": "cloudcast-crypto-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Canonical crypto contract (libsodium). Reference implementation + interop gate for the web and Android ports.",
+  "scripts": {
+    "test": "tsx cryptocore.test.ts"
+  },
+  "dependencies": {
+    "libsodium-wrappers-sumo": "^0.7.15"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

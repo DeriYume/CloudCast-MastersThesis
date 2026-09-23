@@ -1,0 +1,91 @@
+{
+  "_comment": "Design tokens used by both clients. A token that only one platform reads does not belong here.",
+  "brand": {
+    "primary": "#7C3AED",
+    "primaryHoverLight": "#6D28D9",
+    "primaryHoverDark": "#8B5CF6",
+    "logoDot": "#CDBDF5"
+  },
+  "palette": {
+    "light": {
+      "page": "#F5F3FA",
+      "surface": "#FFFFFF",
+      "inputBg": "#FAF9FD",
+      "primaryTint": "#EFEAFB",
+      "border": "#E5E1EF",
+      "inkHeading": "#1F1B2E",
+      "strong": "#39354A",
+      "body": "#4A4658",
+      "secondary": "#6B6680",
+      "muted": "#9A95A6",
+      "faint": "#C2BCD0",
+      "aiBorder": "#E3DDF7",
+      "aiDivider": "#DDD5F2",
+      "aiBg": "#F7F4FF",
+      "aiHeading": "#7C3AED",
+      "aiIcon": "#A87BFF",
+      "selectedBorder": "#D9CCF7"
+    },
+    "dark": {
+      "page": "#0C0B11",
+      "surface": "#15131D",
+      "inputBg": "#0C0B11",
+      "primaryTint": "#241F44",
+      "border": "#2E2A3C",
+      "inkHeading": "#F2F0F7",
+      "strong": "#D6D2E0",
+      "body": "#C4BFD4",
+      "secondary": "#9C97A8",
+      "faint": "#4F4A5E",
+      "accentOnDark": "#B89BFF",
+      "aiBorder": "#2C2550",
+      "aiDivider": "#2C2550",
+      "aiBg": "#1A1535",
+      "aiHeading": "#C9BCFF",
+      "aiIcon": "#B89BFF",
+      "selectedBorder": "#39354A"
+    }
+  },
+  "accents": {
+    "success": "#1F9D57",
+    "warning": "#D9542B",
+    "favorite": "#F5A623"
+  },
+  "extra": {
+    "gradientEnd": "#A87BFF",
+    "aiMeta": {
+      "light": "#6C6491",
+      "dark": "#9A8FCF"
+    },
+    "dangerBorder": {
+      "light": "#F2C4C4",
+      "dark": "#813725"
+    },
+    "hoverRow": "#F2F0F7",
+    "dropOverlay": {
+      "hex": "#F8F7FD",
+      "alpha": 0.82
+    },
+    "hatchLight1": "#F1EEF9",
+    "hatchLight2": "#EFEAFB",
+    "hatchDark2": "#211A40"
+  },
+  "overlays": {
+    "_comment": "Alpha overlays kept as base+alpha so web (rgba) and Android (ARGB Color) render identically. Base colors: primary=brand.primary, warning=accents.warning, white=#FFFFFF, black=#000000, page=palette[mode].page. Dark values pair with a light token resolved per-mode in generate.mjs.",
+    "primaryHover": 0.05,
+    "primaryDragOver": 0.07,
+    "warningHover": 0.06,
+    "onPrimaryBorder": 0.5,
+    "scrim": 0.92,
+    "glass": 0.92,
+    "unreadRowDark": 0.1,
+    "rowHoverDark": 0.14,
+    "dropVeilDark": 0.82,
+    "moveHoverDark": 0.03
+  },
+  "shadowInk": {
+    "light": "20, 16, 40",
+    "dark": "8, 6, 20"
+  },
+  "selectionAlpha": 0.12
+}

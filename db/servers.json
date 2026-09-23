@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "CloudCast",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "mycloud",
+      "Username": "mycloud",
+      "Password": "mycloud",
+      "SSLMode": "prefer"
+    }
+  }
+}

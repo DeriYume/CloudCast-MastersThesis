@@ -1,0 +1,20 @@
+# Environment secrets
+.env
+
+# mkcert TLS certificates
+certs/
+
+# Node
+node_modules/
+dist/
+auth-service/node_modules/
+file-service/node_modules/
+gateway/node_modules/
+web/node_modules/
+web/dist/
+web/.env
+
+
+# OS
+.DS_Store
+Thumbs.db
